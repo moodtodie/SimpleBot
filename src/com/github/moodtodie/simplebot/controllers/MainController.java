@@ -8,8 +8,8 @@ public class MainController {
         Display d = new Display();
         d.displayCreator();
 
-
 //        Test t = new Test();
-//        t.showAllFonts();
+////        t.showAllFonts();
+//        t.aboutPressedKeys();
     }
 }
