@@ -1,5 +1,7 @@
 package com.github.moodtodie.simplebot.display;
 
+import com.github.moodtodie.simplebot.services.KeyPress;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,6 +9,7 @@ import java.awt.event.ActionListener;
 
 public class Display extends JFrame {
 
+    KeyPress keyPress = new KeyPress();
     private int keyCooldown = 10;   //  ms
 
         //      Key size
@@ -33,9 +36,10 @@ public class Display extends JFrame {
 
         //      Display
     private Dimension screenCenter;
-    private Dimension windowSize = new Dimension(1201, 347);
+//    private Dimension windowSize = new Dimension(1201, 347);
+//    private Dimension windowSize = new Dimension(900, 347);
+    private Dimension windowSize = new Dimension(898, 347);
     private Display d = this;
-
 
     public Display(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,6 +59,8 @@ public class Display extends JFrame {
     public void displayCreator(){
         panelCreator();
         keyboardCreator();
+        keyPress.setCooldown(keyCooldown);
+//        keyPress.start();
     }
 
     private JPanel line1 = new JPanel();
@@ -66,27 +72,28 @@ public class Display extends JFrame {
 
     private void buttonPressed(JButton button){
         if (button.getBackground() == btnDisable){
-            System.out.println(button.getName() + " - " + button.getText());
+            mes(button, "Enable");
+            keyPress.addCode(Integer.valueOf(button.getName()));
             button.setBackground(btnEnable);
         } else if (button.getBackground() == btnEnable){
+            mes(button, "Disable");
+            keyPress.deleteCode(Integer.valueOf(button.getName()));
+//            activeKeys.remove(activeKeys.indexOf(Integer.valueOf(button.getName())));
             button.setBackground(btnDisable);
         }
     }
 
+    private void mes(JButton button, String status){
+        System.out.println(button.getName() + "\t-\t'" + button.getText() + "'\t[" + status + "]");
+    }
+
     private void panelCreator(){
-//        d.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
         d.setLayout(new BorderLayout());
 
         JPanel mainPanel = new JPanel();
 
-//        JPanel additionalBlock1 = new JPanel();
-//        JPanel additionalBlock2 = new JPanel();
-//        JPanel arrowsBlock = new JPanel();
-//        JPanel numBlock = new JPanel();
-
         d.add(mainPanel, BorderLayout.WEST);
         mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
-//        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 1));
 
         mainPanel.add(line1);
         line1.setBackground(panelColor1);
@@ -119,6 +126,11 @@ public class Display extends JFrame {
 
 //        JPanel additionalPanel = new JPanel();
 
+//        JPanel additionalBlock1 = new JPanel();
+//        JPanel additionalBlock2 = new JPanel();
+//        JPanel arrowsBlock = new JPanel();
+//        JPanel numBlock = new JPanel();
+
 //        d.add(additionalPanel);
 //        additionalPanel.setLayout();
         //  additionalPanel blocks ...
@@ -127,9 +139,20 @@ public class Display extends JFrame {
         JButton showAdditionalPanel = new JButton();
 
         d.add(showAdditionalPanel, BorderLayout.EAST);
-//        showAdditionalPanel.setLayout();
-        showAdditionalPanel.setPreferredSize(new Dimension(30, windowSize.height));
+        showAdditionalPanel.setText(">");
+        showAdditionalPanel.setForeground(btnText);
+        showAdditionalPanel.setFont(font);
+        showAdditionalPanel.setFocusPainted(false);
+        showAdditionalPanel.setBorderPainted(false);
+        showAdditionalPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        showAdditionalPanel.setPreferredSize(new Dimension(60, windowSize.height));
         showAdditionalPanel.setBackground(panelColor3);
+        showAdditionalPanel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                showAdditionalPanel.setVisible(false);
+            }
+        });
     }
 
     private void keyboardCreator(){
@@ -137,8 +160,8 @@ public class Display extends JFrame {
         JPanel spacePanelM = new JPanel();
         spacePanelM.setPreferredSize(new Dimension(77, keySmallSize.height));
         JPanel spacePanelS = new JPanel();
-        JPanel spacePanelS1 = new JPanel();
         spacePanelS.setPreferredSize(new Dimension(12, keySmallSize.height));
+        JPanel spacePanelS1 = new JPanel();
         spacePanelS1.setPreferredSize(new Dimension(12, keySmallSize.height));
 
         createKey("Esc", 27, keySmallSize, line1);
@@ -252,6 +275,7 @@ public class Display extends JFrame {
         }
 
         button.setPreferredSize(keySize);
+        button.setLayout(new FlowLayout());
         button.setText(symbol);
         button.setName(Integer.toString(keycode));
         button.addActionListener(new ActionListener() {
