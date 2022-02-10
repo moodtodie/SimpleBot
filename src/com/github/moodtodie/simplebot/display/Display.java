@@ -4,10 +4,12 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 public class Display extends JFrame {
 
+    private int keyCooldown = 10;   //  ms
+
+        //      Key size
     private Dimension keyCommonSize = new Dimension(53,52);     //  Win
     private Dimension keySmallSize = new Dimension(53,30);      //  Esc
     private Dimension keyMediumSize = new Dimension(79,52);     //  Tab & Ctrl & Atl & \
@@ -17,22 +19,23 @@ public class Display extends JFrame {
     private Dimension spaceKeySize = new Dimension(331,52);
     private Dimension backspaceKeySize = new Dimension(105,52);
 
+        //      Colors
     private Color btnEnable = new Color(0,217,0);
     private Color btnDisable = new Color(183,183,183);
     private Color btnBlocked = new Color(255,121,121);
     private Color btnText = new Color(255,255,255);
-    private Color panelColor1 = new Color(206,255,0);
-    private Color panelColor2 = new Color(15,192,252);
+    private Color panelColor1 = new Color(238,238,238);
+    private Color panelColor2 = new Color(238,238,238);
+//    private Color panelColor1 = new Color(206,255,0);
+//    private Color panelColor2 = new Color(15,192,252);
     private Color panelColor3 = new Color(0,128,128);
     private Font font = new Font("Arial", Font.BOLD,14);
 
+        //      Display
     private Dimension screenCenter;
     private Dimension windowSize = new Dimension(1201, 347);
-
     private Display d = this;
 
-    private ArrayList<Integer> activatedButtonsList = new ArrayList<>();
-    private ArrayList<Integer> blockedButtonsList = new ArrayList<>();
 
     public Display(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -54,7 +57,7 @@ public class Display extends JFrame {
         keyboardCreator();
     }
 
-//    private JPanel line1 = new JPanel();
+    private JPanel line1 = new JPanel();
     private JPanel line2 = new JPanel();
     private JPanel line3 = new JPanel();
     private JPanel line4 = new JPanel();
@@ -62,33 +65,36 @@ public class Display extends JFrame {
     private JPanel line6 = new JPanel();
 
     private void buttonPressed(JButton button){
-//        int code = Integer.getInteger(button.getName());
-        if (button.getBackground() == btnEnable){
-            button.setBackground(btnDisable);
-        }else if (button.getBackground() == btnDisable){
+        if (button.getBackground() == btnDisable){
+            System.out.println(button.getName() + " - " + button.getText());
             button.setBackground(btnEnable);
+        } else if (button.getBackground() == btnEnable){
+            button.setBackground(btnDisable);
         }
-        System.out.println("*click*");
     }
 
     private void panelCreator(){
 //        d.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        d.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        d.setLayout(new BorderLayout());
 
         JPanel mainPanel = new JPanel();
-        JPanel additionalPanel = new JPanel();
 
 //        JPanel additionalBlock1 = new JPanel();
 //        JPanel additionalBlock2 = new JPanel();
 //        JPanel arrowsBlock = new JPanel();
 //        JPanel numBlock = new JPanel();
 
-        d.add(mainPanel);
+        d.add(mainPanel, BorderLayout.WEST);
         mainPanel.setLayout(new BoxLayout(mainPanel,BoxLayout.PAGE_AXIS));
+//        mainPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 1));
 
-//        mainPanel.add(line1);
-//        line1.setBackground(panelColor1);
-//        line2.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 1));
+        mainPanel.add(line1);
+        line1.setBackground(panelColor1);
+        line1.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
+
+        JPanel spacePanel = new JPanel();
+        mainPanel.add(spacePanel);
+        spacePanel.setPreferredSize(new Dimension(line1.getWidth(),5));
 
         mainPanel.add(line2);
         line2.setBackground(panelColor2);
@@ -109,16 +115,52 @@ public class Display extends JFrame {
         mainPanel.add(line6);
         line6.setBackground(panelColor2);
         line6.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 1));
-//
-        d.add(additionalPanel);
+
+
+//        JPanel additionalPanel = new JPanel();
+
+//        d.add(additionalPanel);
 //        additionalPanel.setLayout();
-        additionalPanel.setPreferredSize(new Dimension(30, windowSize.height));
-        additionalPanel.setBackground(panelColor3);
         //  additionalPanel blocks ...
+
+
+        JButton showAdditionalPanel = new JButton();
+
+        d.add(showAdditionalPanel, BorderLayout.EAST);
+//        showAdditionalPanel.setLayout();
+        showAdditionalPanel.setPreferredSize(new Dimension(30, windowSize.height));
+        showAdditionalPanel.setBackground(panelColor3);
     }
 
     private void keyboardCreator(){
         //  Line 1
+        JPanel spacePanelM = new JPanel();
+        spacePanelM.setPreferredSize(new Dimension(77, keySmallSize.height));
+        JPanel spacePanelS = new JPanel();
+        JPanel spacePanelS1 = new JPanel();
+        spacePanelS.setPreferredSize(new Dimension(12, keySmallSize.height));
+        spacePanelS1.setPreferredSize(new Dimension(12, keySmallSize.height));
+
+        createKey("Esc", 27, keySmallSize, line1);
+        line1.add(spacePanelM);
+        createKey("F1", 112, keySmallSize, line1);
+        createKey("F2", 113, keySmallSize, line1);
+        createKey("F3", 114, keySmallSize, line1);
+        createKey("F4", 115, keySmallSize, line1);
+        line1.add(spacePanelS);
+        createKey("F5", 116, keySmallSize, line1);
+        createKey("F6", 117, keySmallSize, line1);
+        createKey("F7", 118, keySmallSize, line1);
+        createKey("F8", 119, keySmallSize, line1);
+        line1.add(spacePanelS1);
+        createKey("F9", 120, keySmallSize, line1);
+        createKey("F10", 121, keySmallSize, line1);
+        createKey("F11", 122, keySmallSize, line1);
+        createKey("F12", 123, keySmallSize, line1);
+//        createKey("PrtScSysRq", -1, keyCommonSize, line1);
+//        createKey("Pause Brace", 19, keyCommonSize, line1);
+//        createKey("Delete", 127, keyCommonSize, line1);
+//        createKey("Home", 36, keyCommonSize, line1);
 
         //  Line 2
         createKey("~", 128, keyCommonSize, line2);
@@ -183,12 +225,12 @@ public class Display extends JFrame {
 
         // Line 6
         createKey("Ctrl", 17, keyMediumSize, line6);
-        createKey("Win", -1, keyCommonSize, line6);
+        createKey("Win", 524, keyCommonSize, line6);
         createKey("Alt", 18, keyMediumSize, line6);
         createKey("Space", 32, spaceKeySize, line6);
         createKey("Alt", 18, keyMediumSize, line6);
-        createKey("Win", -1, keyCommonSize, line6);
-        createKey("Menu", -1, keyCommonSize, line6);
+        createKey("Win", 524, keyCommonSize, line6);
+        createKey("Menu", 525, keyCommonSize, line6);
         createKey("Ctrl", 17, keyMediumSize, line6);
     }
 
@@ -196,6 +238,7 @@ public class Display extends JFrame {
         JButton button = new JButton();
         line.add(button);
 
+            //      Visual
         button.setForeground(btnText);
         button.setBackground(btnDisable);
         button.setFont(font);
@@ -203,7 +246,7 @@ public class Display extends JFrame {
         button.setBorderPainted(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
-        if (keycode < 0){
+        if (keycode >= 524 && keycode <= 525){
             button.setBackground(btnBlocked);
             button.setEnabled(false);
         }
