@@ -3,10 +3,10 @@ package com.github.moodtodie.simplebot.services;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class KeyPress{
+public class KeyPress extends Thread{
 
     private int cooldown;
-    private ArrayList<Integer> list = new ArrayList<>();
+    private ArrayList<Integer> list = new ArrayList<Integer>();
     private Robot robot;
 
     public KeyPress(){
@@ -25,7 +25,7 @@ public class KeyPress{
         list.add(code);
     }
 
-    public void deleteCode(int code){
+    public void removeCode(int code){
         int index = list.indexOf(code);
         list.remove(index);
     }
@@ -36,31 +36,27 @@ public class KeyPress{
 //        } else return false;
 //    }
 
-    private boolean healthCheck(int code){
-        try {
-            int index = list.indexOf(code);
+    private boolean healthCheck(ArrayList<Integer> list){
+        return (list.size() > 0) ? true : false;
 
-            return true;
-        } catch (Exception e){
-            return false;
-        }
-    }
-
-    public void m(int code){
-        while (healthCheck(code)){
-
-        }
-    }
-
-//    @Override
-//    public void run() {
-//        while (healthCheck()){
-//            for (int i = 1; i < list.size(); i++){
-//                robot.keyPress(list.get(i));
-//                robot.delay(cooldown);
-//                robot.keyRelease(list.get(i));
-//                robot.delay(cooldown);
-//            }
+//        if (list.size() > 0){
+//            return true;
 //        }
-//    }
+//        return false;
+    }
+
+    //healthCheck(aList)
+
+    @Override
+    public void run() {
+        while (true){
+            ArrayList<Integer> aList = list;
+            for (int code : aList){
+                robot.keyPress(aList.get(code));
+                robot.delay(cooldown);
+                robot.keyRelease(aList.get(code));
+                robot.delay(cooldown);
+            }
+        }
+    }
 }

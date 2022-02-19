@@ -36,31 +36,30 @@ public class Display extends JFrame {
 
         //      Display
     private Dimension screenCenter;
-//    private Dimension windowSize = new Dimension(1201, 347);
-//    private Dimension windowSize = new Dimension(900, 347);
-    private Dimension windowSize = new Dimension(898, 347);
+    private Dimension windowSize = new Dimension(1201, 347);
     private Display d = this;
 
     public Display(){
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
             //  Screen Settings
-        setSize(windowSize);
         setResizable(false);
         screenCenter = getScreenCenterLocation(windowSize);
         setLocation((int) screenCenter.getWidth(),(int) screenCenter.getHeight());
 
             //  Visual Settings
         setVisible(true);
-        setTitle("Simple Bot v3.0");
+        setTitle("Simple Bot v4.4");
         setIconImage(new ImageIcon("res/icon.png").getImage());
     }
 
     public void displayCreator(){
         panelCreator();
         keyboardCreator();
+        d.pack();
+
         keyPress.setCooldown(keyCooldown);
-//        keyPress.start();
+        keyPress.start();
     }
 
     private JPanel line1 = new JPanel();
@@ -77,7 +76,7 @@ public class Display extends JFrame {
             button.setBackground(btnEnable);
         } else if (button.getBackground() == btnEnable){
             mes(button, "Disable");
-            keyPress.deleteCode(Integer.valueOf(button.getName()));
+            keyPress.removeCode(Integer.valueOf(button.getName()));
 //            activeKeys.remove(activeKeys.indexOf(Integer.valueOf(button.getName())));
             button.setBackground(btnDisable);
         }
@@ -123,19 +122,51 @@ public class Display extends JFrame {
         line6.setBackground(panelColor2);
         line6.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 1));
 
+        addAdditionalButton(mainPanel);
+    }
 
-//        JPanel additionalPanel = new JPanel();
+    private void addAdditionalPanel(){
+        JPanel additionalPanel = new JPanel();
+        d.add(additionalPanel);
+        additionalPanel.setLayout(new BoxLayout(additionalPanel,BoxLayout.LINE_AXIS));
+//        additionalPanel.setLayout(new BorderLayout());
 
-//        JPanel additionalBlock1 = new JPanel();
-//        JPanel additionalBlock2 = new JPanel();
-//        JPanel arrowsBlock = new JPanel();
-//        JPanel numBlock = new JPanel();
+        JPanel spacePanel = new JPanel();
+        spacePanel.setPreferredSize(new Dimension(25, 50));
+        spacePanel.setBackground(panelColor3);
+        additionalPanel.add(spacePanel);
 
-//        d.add(additionalPanel);
-//        additionalPanel.setLayout();
-        //  additionalPanel blocks ...
+        JPanel additionalBlock = new JPanel();
+        additionalBlock.setLayout(new BorderLayout());
+        additionalPanel.add(additionalBlock);
+
+        JPanel additionalBlockTop = new JPanel();
+        additionalBlockTop.setBackground(panelColor1);
+        additionalBlockTop.setLayout(new FlowLayout(FlowLayout.LEFT, 2, 2));
+        additionalBlock.add(additionalBlockTop,BorderLayout.NORTH);
+
+        createKey("PrScr", -1, keySmallSize, additionalBlockTop);
+        createKey("ScrLk", 145, keySmallSize, additionalBlockTop);
+        createKey("Break", 19, keySmallSize, additionalBlockTop);
 
 
+//        createKey("Delete", 127, keyCommonSize, line1);
+//        createKey("Home", 36, keyCommonSize, line1);
+
+        JPanel arrowsBlock = new JPanel();
+        arrowsBlock.setBackground(panelColor1);
+        arrowsBlock.setLayout(new GridBagLayout());
+        additionalBlock.add(arrowsBlock,BorderLayout.SOUTH);
+
+        createKey("<-", 37, keyCommonSize, arrowsBlock);
+        createKey("-", 40, keyCommonSize, arrowsBlock);
+        createKey("->", 39, keyCommonSize, arrowsBlock);
+//        createKey("^", 38, keyCommonSize, arrowsBlock);
+
+        JPanel numBlock = new JPanel();
+    }
+
+    private void addAdditionalButton(JPanel panel){
         JButton showAdditionalPanel = new JButton();
 
         d.add(showAdditionalPanel, BorderLayout.EAST);
@@ -145,12 +176,15 @@ public class Display extends JFrame {
         showAdditionalPanel.setFocusPainted(false);
         showAdditionalPanel.setBorderPainted(false);
         showAdditionalPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        showAdditionalPanel.setPreferredSize(new Dimension(60, windowSize.height));
+        showAdditionalPanel.setPreferredSize(new Dimension(60, panel.getHeight()));
         showAdditionalPanel.setBackground(panelColor3);
         showAdditionalPanel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                showAdditionalPanel.setVisible(false);
+                showAdditionalPanel.setVisible(false);
+                d.remove(showAdditionalPanel);
+                addAdditionalPanel();
+                d.pack();
             }
         });
     }
@@ -180,10 +214,6 @@ public class Display extends JFrame {
         createKey("F10", 121, keySmallSize, line1);
         createKey("F11", 122, keySmallSize, line1);
         createKey("F12", 123, keySmallSize, line1);
-//        createKey("PrtScSysRq", -1, keyCommonSize, line1);
-//        createKey("Pause Brace", 19, keyCommonSize, line1);
-//        createKey("Delete", 127, keyCommonSize, line1);
-//        createKey("Home", 36, keyCommonSize, line1);
 
         //  Line 2
         createKey("~", 128, keyCommonSize, line2);
@@ -255,6 +285,10 @@ public class Display extends JFrame {
         createKey("Win", 524, keyCommonSize, line6);
         createKey("Menu", 525, keyCommonSize, line6);
         createKey("Ctrl", 17, keyMediumSize, line6);
+    }
+
+    private void additionalKeyboardCreator(){
+
     }
 
     private void createKey(String symbol, int keycode, Dimension keySize, JPanel line){
